@@ -71,11 +71,15 @@ Prerequisites: Python 3.12+, Node.js 18+, and [Ollama](https://ollama.com) (opti
 
 Or simply run **`run_local.bat`** (starts both servers).
 
+> **Moving to a different computer?** Run **`setup_local.bat`** once (creates the venv and
+> installs all dependencies), then use `run_local.bat`. Full guide:
+> [`docs/setup-new-machine.md`](docs/setup-new-machine.md).
+
 ## Tests
 
 ```bat
 cd backend
-.venv\Scripts\python -m pytest tests\ -q     # 34 tests: metadata, processing, charts, validation, API e2e
+.venv\Scripts\python -m pytest tests\ -q     # 40 tests: metadata, processing, charts, validation, API e2e
 ```
 
 ## Project layout
