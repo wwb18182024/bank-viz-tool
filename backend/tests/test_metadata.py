@@ -10,7 +10,7 @@ def test_identifier_detection(bank_df):
 def test_numeric_and_categorical(bank_df):
     assert infer_semantic_type("Balance", bank_df["Balance"]) == "numeric"
     assert infer_semantic_type("Geography", bank_df["Geography"]) == "categorical"
-    assert infer_semantic_type("Churn", bank_df["Churn"]) == "numeric"
+    assert infer_semantic_type("Churn", bank_df["Churn"]) == "boolean"
 
 
 def test_metadata_structure(bank_df):

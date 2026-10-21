@@ -38,7 +38,17 @@ def infer_semantic_type(name: str, series: pd.Series) -> str:
     if pd.api.types.is_bool_dtype(series):
         return BOOLEAN
     if pd.api.types.is_numeric_dtype(series):
-        return IDENTIFIER if _looks_like_identifier(name, series) else NUMERIC
+        if _looks_like_identifier(name, series):
+            return IDENTIFIER
+        # Integer columns with exactly two values (e.g. churn flags 0/1) are
+        # semantically boolean, not measures.
+        if (
+            pd.api.types.is_integer_dtype(series)
+            and series.dropna().nunique() == 2
+            and len(series.dropna()) >= 10
+        ):
+            return BOOLEAN
+        return NUMERIC
     if pd.api.types.is_datetime64_any_dtype(series):
         return DATETIME
     non_null = series.dropna()

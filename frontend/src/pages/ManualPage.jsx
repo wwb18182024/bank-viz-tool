@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { api } from '../api.js'
 import ChartCard from '../components/ChartCard.jsx'
 
-const CHARTS_NEEDING_Y = ['bar', 'grouped_bar', 'stacked_bar', 'box', 'scatter', 'line']
-const CHARTS_NEEDING_X = ['bar', 'grouped_bar', 'stacked_bar', 'pie', 'histogram', 'box', 'scatter', 'line']
+const CHARTS_NEEDING_Y = ['bar', 'horizontal_bar', 'grouped_bar', 'stacked_bar', 'stacked_area', 'box', 'scatter', 'line']
+const CHARTS_NEEDING_X = ['bar', 'horizontal_bar', 'grouped_bar', 'stacked_bar', 'stacked_area', 'pie', 'donut', 'histogram', 'box', 'scatter', 'line']
 
 export default function ManualPage({ dataset }) {
   const [options, setOptions] = useState(null)
@@ -82,7 +82,7 @@ export default function ManualPage({ dataset }) {
             </select>
           </label>
         )}
-        {['grouped_bar', 'stacked_bar', 'scatter'].includes(spec.chart_type) && (
+        {['grouped_bar', 'stacked_bar', 'stacked_area', 'scatter'].includes(spec.chart_type) && (
           <label>Group by
             <select value={spec.group} onChange={set('group')}>
               <option value="">—</option>

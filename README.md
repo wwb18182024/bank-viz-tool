@@ -13,7 +13,7 @@ MSc IT+ Development Project.
 ┌─────────────────────────┐        ┌──────────────────────────────────────┐
 │  React frontend (Vite)  │  HTTP  │  FastAPI backend (localhost:8000)    │
 │  - Upload & metadata UI │ ─────► │  - data_A: metadata extractor        │
-│  - Auto-viz dashboard   │        │  - data_B: chart library (9 types)   │
+│  - Auto-viz dashboard   │        │  - data_B: chart library (12 types)  │
 │  - Manual builder       │        │  - data_C: financial processing fns  │
 │  - ECharts rendering    │        │  - Plan schema + validator + filter  │
 └─────────────────────────┘        │  - Executor → chart JSON             │

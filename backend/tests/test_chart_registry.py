@@ -62,3 +62,25 @@ def test_grouped_bar_builder(bank_df):
     spec = ChartSpec(chart_type="grouped_bar", title="Products by churn", x="NumOfProducts", group="Churn")
     result = execute_spec(bank_df, spec, _meta(bank_df))
     assert result["ok"]
+
+
+def test_donut_builder(bank_df):
+    spec = ChartSpec(chart_type="donut", title="Churn share donut", x="Churn", agg="count")
+    result = execute_spec(bank_df, spec, _meta(bank_df))
+    assert result["ok"]
+    assert result["option"]["series"][0]["radius"] == ["45%", "68%"]
+
+
+def test_horizontal_bar_builder(bank_df):
+    spec = ChartSpec(chart_type="horizontal_bar", title="Avg balance by geography", x="Geography", y="Balance", agg="mean")
+    result = execute_spec(bank_df, spec, _meta(bank_df))
+    assert result["ok"]
+    assert result["option"]["yAxis"]["type"] == "category"
+    assert result["option"]["xAxis"]["type"] == "value"
+
+
+def test_stacked_area_builder(bank_df):
+    spec = ChartSpec(chart_type="stacked_area", title="Product mix", x="NumOfProducts", group="Churn")
+    result = execute_spec(bank_df, spec, _meta(bank_df))
+    assert result["ok"]
+    assert all(s["type"] == "line" and s.get("areaStyle") is not None for s in result["option"]["series"])

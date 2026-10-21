@@ -64,27 +64,27 @@ def validate_spec(spec, meta: dict) -> tuple[bool, str]:
             return False, "Box plot requires a numeric Y column"
         if spec.x and not (_cat(spec.x) or _num(spec.x)):
             return False, "Box plot X must be categorical"
-    elif spec.chart_type in ("bar", "pie", "line"):
+    elif spec.chart_type in ("bar", "pie", "donut", "line", "horizontal_bar"):
         if not (spec.x and (_cat(spec.x) or _num(spec.x))):
             return False, f"{spec.chart_type} requires an X column"
         if spec.y is not None and not _num(spec.y):
             return False, f"{spec.chart_type} Y must be numeric (or omitted for count)"
-    elif spec.chart_type in ("grouped_bar", "stacked_bar"):
+    elif spec.chart_type in ("grouped_bar", "stacked_bar", "stacked_area"):
         if not (spec.x and _cat(spec.x)):
-            return False, "Grouped/stacked bar requires a categorical X"
+            return False, "Grouped/stacked charts require a categorical X"
         if spec.group and not _cat(spec.group):
-            return False, "Grouped/stacked bar group must be categorical"
+            return False, "Grouped/stacked charts group must be categorical"
     elif spec.chart_type == "heatmap":
         pass
 
     # Cardinality guards: meaningless charts of too many categories
-    if spec.chart_type == "pie" and spec.x and _cardinality(cmap[spec.x]) > MAX_PIE_CARDINALITY:
-        return False, f"Pie chart with >{MAX_PIE_CARDINALITY} categories is unreadable (use bar)"
-    if spec.chart_type in ("bar", "line") and spec.x and _cat(spec.x) and _cardinality(cmap[spec.x]) > MAX_CATEGORY_CARDINALITY and (spec.y is None or spec.agg == "count"):
+    if spec.chart_type in ("pie", "donut") and spec.x and _cardinality(cmap[spec.x]) > MAX_PIE_CARDINALITY:
+        return False, f"Pie/donut chart with >{MAX_PIE_CARDINALITY} categories is unreadable (use bar)"
+    if spec.chart_type in ("bar", "line", "horizontal_bar") and spec.x and _cat(spec.x) and _cardinality(cmap[spec.x]) > MAX_CATEGORY_CARDINALITY and (spec.y is None or spec.agg == "count"):
         return False, f"Counting {cmap[spec.x]['unique']} categories is meaningless"
 
-    if signature and spec.chart_type in ("grouped_bar", "stacked_bar") and not spec.group:
-        return False, "Grouped/stacked bar requires a group variable"
+    if signature and spec.chart_type in ("grouped_bar", "stacked_bar", "stacked_area") and not spec.group:
+        return False, "Grouped/stacked charts require a group variable"
 
     return True, "ok"
 

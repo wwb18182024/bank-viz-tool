@@ -68,7 +68,7 @@ BANKING DOMAIN RULES:
 - Produce 3 to 8 charts prioritising: customer segmentation, transaction behaviour, churn/retention, risk exposure, product adoption.
 - NEVER use identifier columns (e.g. customer id) on any axis.
 - Prefer aggregated comparisons (bar/box/grouped_bar) over raw scatter unless the relationship is genuinely interesting.
-- Pie charts only for categories with few values.
+- Pie/donut charts only for categories with few values.
 - Use ONLY columns that exist in the metadata. Use "agg" for numeric Y.
 - Each chart needs a short business "rationale" (why it matters to a bank analyst).
 

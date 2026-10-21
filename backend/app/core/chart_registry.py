@@ -82,8 +82,8 @@ def build_bar(df: pd.DataFrame, spec, meta: dict) -> dict:
     }, used
 
 
-def build_grouped_bar(df: pd.DataFrame, spec, meta: dict, stacked: bool = False) -> dict:
-    used = ["group_aggregate", "top_n"]
+def _grouped_pivot(df: pd.DataFrame, spec, used: list) -> pd.DataFrame:
+    """Shared aggregation for grouped/stacked charts: index=x, columns=group."""
     work = df
     if spec.filter:
         work = processing.apply_filter(work, spec.filter)
@@ -96,7 +96,12 @@ def build_grouped_bar(df: pd.DataFrame, spec, meta: dict, stacked: bool = False)
         pivot = work.pivot_table(index=spec.x, columns=spec.group, aggfunc="size", fill_value=0)
     else:
         pivot = work.pivot_table(index=spec.x, columns=spec.group, values=spec.y, aggfunc=spec.agg, fill_value=0)
-    pivot = pivot.loc[pivot.sum(axis=1).sort_values(ascending=False).index[:MAX_BAR_CATEGORIES]]
+    return pivot.loc[pivot.sum(axis=1).sort_values(ascending=False).index[:MAX_BAR_CATEGORIES]]
+
+
+def build_grouped_bar(df: pd.DataFrame, spec, meta: dict, stacked: bool = False) -> dict:
+    used = ["group_aggregate", "top_n"]
+    pivot = _grouped_pivot(df, spec, used)
     labels = pivot.index.astype(str).tolist()
     series = [
         {"name": str(c), "type": "bar", "stack": "total" if stacked else None, "data": [None if pd.isna(v) else round(float(v), 4) for v in pivot[c]]}
@@ -110,16 +115,45 @@ def build_grouped_bar(df: pd.DataFrame, spec, meta: dict, stacked: bool = False)
     }, used
 
 
-def build_pie(df: pd.DataFrame, spec, meta: dict) -> dict:
+def build_stacked_area(df: pd.DataFrame, spec, meta: dict) -> dict:
+    used = ["group_aggregate", "top_n"]
+    pivot = _grouped_pivot(df, spec, used)
+    labels = pivot.index.astype(str).tolist()
+    series = [
+        {"name": str(c), "type": "line", "stack": "total", "areaStyle": {},
+         "data": [None if pd.isna(v) else round(float(v), 4) for v in pivot[c]]}
+        for c in pivot.columns
+    ]
+    return {
+        **_base(spec.title),
+        "xAxis": {**_axis_category(spec.x), "data": labels, "axisLabel": {"rotate": 30 if len(labels) > 8 else 0}},
+        "yAxis": _axis_value(spec.y or "Count"),
+        "series": series,
+    }, used
+
+
+def build_horizontal_bar(df: pd.DataFrame, spec, meta: dict) -> dict:
+    labels, values, used = _agg_column(df, spec)
+    return {
+        **_base(spec.title),
+        "xAxis": _axis_value(spec.y or "Count"),
+        "yAxis": {**_axis_category(spec.x), "data": labels},
+        "series": [{"type": "bar", "data": values, "name": spec.y or "Count"}],
+        "legend": {"show": False},
+    }, used
+
+
+def build_pie(df: pd.DataFrame, spec, meta: dict, donut: bool = False) -> dict:
     labels, values, used = _agg_column(df, spec)
     if len(labels) > MAX_PIE_SLICES:
         labels, values = labels[:MAX_PIE_SLICES], values[:MAX_PIE_SLICES]
         labels.append("Other")
         values.append(max(0, int(df[spec.x].nunique()) - MAX_PIE_SLICES))
         used.append("top_n")
+    radius = ["45%", "68%"] if donut else "62%"
     return {
         **_base(spec.title),
-        "series": [{"type": "pie", "radius": "62%", "data": [{"name": str(l), "value": v} for l, v in zip(labels, values)]}],
+        "series": [{"type": "pie", "radius": radius, "data": [{"name": str(l), "value": v} for l, v in zip(labels, values)]}],
         "legend": {"bottom": 0, "type": "scroll"},
     }, used
 
@@ -278,6 +312,24 @@ REGISTRY: dict[str, dict] = {
         "description": "Show proportions of a low-cardinality category, e.g. share of customers by churn label.",
         "signature": "categorical x (few categories), optional numeric y",
         "builder": build_pie,
+    },
+    "donut": {
+        "name": "Donut chart",
+        "description": "Proportions of a low-cardinality category with a hole for a centred KPI, e.g. portfolio mix by product.",
+        "signature": "categorical x (few categories), optional numeric y",
+        "builder": lambda df, spec, meta: build_pie(df, spec, meta, donut=True),
+    },
+    "horizontal_bar": {
+        "name": "Horizontal bar chart",
+        "description": "Ranked comparison across many or long-named categories, e.g. top product categories by total transaction amount.",
+        "signature": "categorical x, optional numeric y (aggregated)",
+        "builder": build_horizontal_bar,
+    },
+    "stacked_area": {
+        "name": "Stacked area chart",
+        "description": "Composition trend over an ordered variable, e.g. monthly transaction volume split by product.",
+        "signature": "ordered/categorical x, numeric y (aggregated), categorical group",
+        "builder": build_stacked_area,
     },
     "histogram": {
         "name": "Histogram",

@@ -37,6 +37,24 @@ def test_reject_pie_high_cardinality(bank_df):
     assert not ok
 
 
+def test_reject_donut_high_cardinality(bank_df):
+    spec = ChartSpec(chart_type="donut", title="x", x="Balance")
+    ok, _ = validate_spec(spec, _meta(bank_df))
+    assert not ok
+
+
+def test_reject_horizontal_bar_without_x(bank_df):
+    spec = ChartSpec(chart_type="horizontal_bar", title="x", y="Balance", agg="mean")
+    ok, reason = validate_spec(spec, _meta(bank_df))
+    assert not ok and "requires an X column" in reason
+
+
+def test_reject_stacked_area_without_group(bank_df):
+    spec = ChartSpec(chart_type="stacked_area", title="x", x="Geography")
+    ok, reason = validate_spec(spec, _meta(bank_df))
+    assert not ok and "group" in reason.lower()
+
+
 def test_accept_valid_specs(bank_df):
     meta = _meta(bank_df)
     specs = [
