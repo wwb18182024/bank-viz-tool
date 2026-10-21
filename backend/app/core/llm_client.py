@@ -17,6 +17,11 @@ from .plan_schema import parse_plan
 
 _LOCAL_HOSTS = {"127.0.0.1", "localhost", "::1", "[::1]"}
 
+# Session that ignores system proxy settings — LLM traffic must go direct to
+# localhost (a system HTTP proxy can hijack or time out local calls).
+_session = requests.Session()
+_session.trust_env = False
+
 
 class LLMError(RuntimeError):
     pass
@@ -33,7 +38,7 @@ def ensure_local_endpoint(url: str) -> None:
 
 def ollama_reachable(url: str | None = None, timeout: float = 2.0) -> bool:
     try:
-        r = requests.get(f"{url or settings.OLLAMA_URL}/api/tags", timeout=timeout)
+        r = _session.get(f"{url or settings.OLLAMA_URL}/api/tags", timeout=timeout)
         return r.status_code == 200
     except requests.RequestException:
         return False
@@ -78,7 +83,7 @@ def _extract_json(text: str):
     return json.loads(text)
 
 
-def call_llm(meta: dict, timeout: float = 120.0) -> list:
+def call_llm(meta: dict, timeout: float | None = None) -> list:
     """Call local Ollama and return parsed ChartSpec list (may be empty)."""
     ensure_local_endpoint(settings.OLLAMA_URL)
     payload = {
@@ -86,12 +91,18 @@ def call_llm(meta: dict, timeout: float = 120.0) -> list:
         "messages": build_prompt(meta),
         "stream": False,
         "format": "json",
-        "options": {"temperature": 0.2, "num_ctx": 8192},
+        # num_ctx 4096 is plenty for metadata-only prompts and keeps the KV
+        # cache small on CPU-only machines with limited free RAM.
+        "options": {"temperature": 0.2, "num_ctx": 4096},
     }
     last_error = None
     for _ in range(2):  # one repair/retry round
         try:
-            resp = requests.post(f"{settings.OLLAMA_URL}/api/chat", json=payload, timeout=timeout)
+            resp = _session.post(
+                f"{settings.OLLAMA_URL}/api/chat",
+                json=payload,
+                timeout=timeout or settings.OLLAMA_TIMEOUT,
+            )
             resp.raise_for_status()
             content = resp.json()["message"]["content"]
             return parse_plan(_extract_json(content))

@@ -6,7 +6,10 @@ class Settings:
     APP_NAME: str = "BankViz API"
     # Privacy: the LLM endpoint MUST be local. Remote endpoints are refused (fail closed).
     OLLAMA_URL: str = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434")
-    OLLAMA_MODEL: str = os.environ.get("OLLAMA_MODEL", "qwen2.5:7b-instruct-q4_K_M")
+    # qwen2.5:3b is the default for CPU-only machines (fits in ~4 GB RAM and
+    # returns plans in <30 s). On GPU machines set OLLAMA_MODEL=qwen2.5:7b.
+    OLLAMA_MODEL: str = os.environ.get("OLLAMA_MODEL", "qwen2.5:3b")
+    OLLAMA_TIMEOUT: int = int(os.environ.get("OLLAMA_TIMEOUT", "300"))
     MAX_UPLOAD_MB: int = int(os.environ.get("MAX_UPLOAD_MB", "100"))
     TOP_K_CATEGORIES: int = int(os.environ.get("TOP_K_CATEGORIES", "10"))
     CORS_ORIGINS: list = [
