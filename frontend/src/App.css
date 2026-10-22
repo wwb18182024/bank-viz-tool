@@ -131,3 +131,28 @@ main { flex: 1; padding: 20px 24px; max-width: 1280px; width: 100%; margin: 0 au
 .req { color: var(--danger); }
 .hint { color: var(--muted); }
 code { background: #f0f2f5; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+/* ---- AutoViz progress panel ---- */
+.progress-panel {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  margin: 12px 0;
+  border: 1px solid var(--border, #d8dee9);
+  border-left: 4px solid #4a7dde;
+  border-radius: 8px;
+  background: var(--panel, #f6f8fc);
+}
+.progress-panel strong { font-size: 14px; }
+.progress-hint { font-size: 12.5px; opacity: 0.75; margin-top: 3px; line-height: 1.45; }
+.spinner {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  border: 3px solid rgba(74, 125, 222, 0.25);
+  border-top-color: #4a7dde;
+  border-radius: 50%;
+  animation: bkz-spin 0.9s linear infinite;
+}
+@keyframes bkz-spin { to { transform: rotate(360deg); } }
