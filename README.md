@@ -1,8 +1,8 @@
 # BankViz — Local LLM-Powered Visual Exploration for Retail-Bank Datasets
 
-A fully local tool that ingests retail-banking CSV/Excel datasets, extracts structured
-metadata, and uses a **locally hosted open-source LLM** to generate and execute data
-visualisation plans — plus a manual chart-builder mode. **No raw data ever leaves the
+A fully local tool that ingests retail-banking CSV/Excel datasets, extracts structured  
+metadata, and uses a **locally hosted open-source LLM** to generate and execute data  
+visualisation plans — plus a manual chart-builder mode. **No raw data ever leaves the  
 user's machine.**
 
 MSc IT+ Development Project.
@@ -25,13 +25,14 @@ MSc IT+ Development Project.
                                    └──────────────────────────────────────┘
 ```
 
-**Pipeline (auto mode):** upload → metadata (data_A) → prompt = metadata + data_B +
-data_C descriptions + banking-domain rules → local LLM returns a JSON **visualisation
+**Pipeline (auto mode):** upload → metadata (data_A) → prompt = metadata + data_B +  
+data_C descriptions + banking-domain rules → local LLM returns a JSON **visualisation  
 plan** (not images) → schema validation → deterministic domain-rule filtering (ranking
-+ suppression of meaningless charts) → plan executor invokes pre-coded chart builders →
-ECharts JSON rendered in the browser.
 
-If the LLM is offline or returns nothing valid, a **statistical fallback recommender**
+- suppression of meaningless charts) → plan executor invokes pre-coded chart builders →  
+  ECharts JSON rendered in the browser.
+
+If the LLM is offline or returns nothing valid, a **statistical fallback recommender**  
 keeps the tool usable (degraded mode, clearly indicated in the UI).
 
 ## Privacy guarantees
@@ -50,7 +51,6 @@ Prerequisites: Python 3.12+, Node.js 18+, and [Ollama](https://ollama.com) (opti
    ollama serve
    ollama pull qwen2.5:7b-instruct-q4_K_M
    ```
-
 2. **Backend**:
    ```bat
    cd backend
@@ -58,21 +58,19 @@ Prerequisites: Python 3.12+, Node.js 18+, and [Ollama](https://ollama.com) (opti
    .venv\Scripts\pip install -r requirements.txt
    .venv\Scripts\python -m uvicorn app.main:app --port 8000
    ```
-
 3. **Frontend** (second terminal):
    ```bat
    cd frontend
    npm install
    npm run dev
    ```
-
-4. Open **http://localhost:5173**, upload `data/sample_bank_customers.csv` (2,000 synthetic
+4. Open **<http://localhost:5173>**, upload `data/sample_bank_customers.csv` (2,000 synthetic  
    customers) or any bank CSV/Excel, then use *Auto-visualise* or the *Manual builder*.
 
 Or simply run **`run_local.bat`** (starts both servers).
 
-> **Moving to a different computer?** Run **`setup_local.bat`** once (creates the venv and
-> installs all dependencies), then use `run_local.bat`. Full guide:
+> **Moving to a different computer?** Run **`setup_local.bat`** once (creates the venv and  
+> installs all dependencies), then use `run_local.bat`. Full guide:  
 > [`docs/setup-new-machine.md`](docs/setup-new-machine.md).
 
 ## Tests
@@ -98,16 +96,16 @@ data/                   synthetic sample dataset + generator script
 
 ## Configuration (environment variables)
 
-| Variable | Default | Purpose |
-|----------|---------|---------|
-| `OLLAMA_URL` | `http://127.0.0.1:11434` | Local LLM endpoint (must be local) |
-| `OLLAMA_MODEL` | `qwen2.5:7b-instruct-q4_K_M` | Model tag |
-| `MAX_UPLOAD_MB` | `100` | Upload size limit |
+| Variable        | Default                      | Purpose                            |
+| --------------- | ---------------------------- | ---------------------------------- |
+| `OLLAMA_URL`    | `http://127.0.0.1:11434`     | Local LLM endpoint (must be local) |
+| `OLLAMA_MODEL`  | `qwen2.5:7b-instruct-q4_K_M` | Model tag                          |
+| `MAX_UPLOAD_MB` | `100`                        | Upload size limit                  |
 
 ## Domain-aware filtering (two layers)
 
-1. **Soft** — banking-domain instructions in the LLM prompt (segmentation, transaction
+1. **Soft** — banking-domain instructions in the LLM prompt (segmentation, transaction  
    behaviour, churn, risk, product adoption first).
-2. **Hard** — deterministic rules that always run: identifier columns rejected on any
-   axis, high-cardinality pies/counts suppressed, chart/column type compatibility
+2. **Hard** — deterministic rules that always run: identifier columns rejected on any  
+   axis, high-cardinality pies/counts suppressed, chart/column type compatibility  
    enforced, duplicates removed, banking-themed charts ranked first.

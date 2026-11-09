@@ -4,8 +4,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5f6ede5c-218d-4f72-8f1d-2a3b407094a7" name="更改" comment="">
+    <list default="true" id="5f6ede5c-218d-4f72-8f1d-2a3b407094a7" name="更改" comment="update datasets">
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/australian.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/australian_credit.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/bank_marketing.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/bank_marketing.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/bank_marketing_x/bank" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/bank_marketing_x/bank-additional.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/bank_marketing_x/bank-full.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/bank_marketing_x/bank-names.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/bank_marketing_x/bank.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/bank_marketing_x/bank.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/credit_card_default.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/credit_default.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/credit_default_x/default of credit card clients" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/credit_default_x/default of credit card clients.xls" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/german.data" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/german_credit.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/kaggle_churn_modelling.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/kaggle_churn_raw.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/dataset/synthetic_bank_transactions.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/run_local.bat" beforeDir="false" afterPath="$PROJECT_DIR$/run_local.bat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/setup_local.bat" beforeDir="false" afterPath="$PROJECT_DIR$/setup_local.bat" afterDir="false" />
     </list>
@@ -72,11 +92,24 @@
       <workItem from="1793092774297" duration="2181000" />
       <workItem from="1793096369834" duration="2509000" />
       <workItem from="1793358899898" duration="746000" />
-      <workItem from="1794227732701" duration="647000" />
+      <workItem from="1794227732701" duration="1241000" />
     </task>
+    <task id="LOCAL-00001" summary="update datasets">
+      <option name="closed" value="true" />
+      <created>1794228718854</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1794228718854</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="update datasets" />
+    <option name="LAST_COMMIT_MESSAGE" value="update datasets" />
   </component>
 </project>
